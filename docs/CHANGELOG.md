@@ -11,6 +11,7 @@ Format:
 
 - Added
   - Schema PostgreSQL multi-tenant + RLS + RBAC + tabel domain inti (competition, teams, matches, events, standings) + automation jobs + trigger publish competition.
+  - Enterprise database extension (120–150 tabel) termasuk partitioning untuk tabel high-volume, RBAC granular, data dictionary generator, benchmarking harness, dan playbooks operasional.
   - Service layer Supabase untuk competitions/teams/matches + automation worker + round-robin fixture generator.
   - 3 aplikasi Next.js: public web, EO dashboard, admin dashboard (shell).
   - API routes di EO dashboard untuk competitions/teams/matches + publish + match events.
@@ -24,9 +25,14 @@ Format:
   - Sistem sudah punya foundation end-to-end: tenant -> create competition -> publish -> (job enqueue) -> public read.
 - Terkait
   - Database: [database/migrations/001_init.sql](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/database/migrations/001_init.sql)
+  - Database: [database/migrations/002_enterprise.sql](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/database/migrations/002_enterprise.sql)
+  - Database: [database/migrations/003_enterprise_ext.sql](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/database/migrations/003_enterprise_ext.sql)
   - Backend: [backend/services](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/backend/services)
   - Apps: [apps](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/apps)
   - Docs: [docs/SYSTEM_ARCHITECTURE.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/SYSTEM_ARCHITECTURE.md)
   - Docs: [docs/MODULES.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/MODULES.md)
   - Docs: [docs/PROJECT_STRUCTURE.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/PROJECT_STRUCTURE.md)
   - Docs: [docs/API_V1.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/API_V1.md)
+  - Docs: [docs/DATABASE_ENTERPRISE.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/DATABASE_ENTERPRISE.md)
+  - Docs: [docs/ERD.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/ERD.md)
+  - Docs: [docs/DATA_DICTIONARY.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/DATA_DICTIONARY.md)
