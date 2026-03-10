@@ -96,6 +96,14 @@ Wizard:
   - preview
   - publish
 
+Management:
+
+- Page: `/competitions/:id/manage`
+- Supports:
+  - bulk participant import (CSV → teams)
+  - round-robin schedule generation
+  - analytics snapshot view
+
 ## Operational Notes
 
 Key management:

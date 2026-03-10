@@ -16,6 +16,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <Link className="hover:text-zinc-50" href="/competitions">
                 Competitions
               </Link>
+              <Link className="hover:text-zinc-50" href="/discover">
+                Discover
+              </Link>
+              <Link className="hover:text-zinc-50" href="/my-teams">
+                My Teams
+              </Link>
               <Link className="hover:text-zinc-50" href="/teams">
                 Teams
               </Link>

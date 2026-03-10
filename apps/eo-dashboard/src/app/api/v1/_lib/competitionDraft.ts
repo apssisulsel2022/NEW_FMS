@@ -5,7 +5,11 @@ export type CompetitionDraftInput = {
 };
 
 export function mergeDraftPayload(input: CompetitionDraftInput) {
-  return { ...(input.templatePayload ?? {}), ...(input.payload ?? {}), eventOrganizerId: input.eventOrganizerId };
+  return {
+    ...(input.templatePayload ?? {}),
+    ...(input.payload ?? {}),
+    eventOrganizerId: input.eventOrganizerId
+  } as Record<string, unknown> & { eventOrganizerId: string };
 }
 
 export function validateCompetitionPayload(payload: Record<string, unknown>) {
@@ -15,4 +19,3 @@ export function validateCompetitionPayload(payload: Record<string, unknown>) {
   if (!slug) return { ok: false as const, message: "slug is required" };
   return { ok: true as const };
 }
-

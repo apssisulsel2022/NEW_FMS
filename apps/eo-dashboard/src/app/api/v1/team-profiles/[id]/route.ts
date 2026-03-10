@@ -3,14 +3,14 @@ import { rateLimitHeaders } from "@/app/api/v1/_lib/headers";
 import { readJson } from "@/app/api/v1/_lib/http";
 import { fail, noContent, ok } from "@/app/api/v1/_lib/responses";
 import { requireAuth } from "@/app/api/v1/_lib/auth";
-import { requireOrganizerRole } from "@/app/api/v1/_lib/rbac";
+import { slugify } from "@/app/api/v1/_lib/slug";
 
 import {
-  deleteCompetition,
-  getCompetition,
-  updateCompetition,
-  type UpdateCompetitionInput
-} from "@backend/services/competitions";
+  deleteTeamProfile,
+  getTeamProfile,
+  updateTeamProfile,
+  type UpdateTeamProfileInput
+} from "@backend/services/teamProfiles";
 
 export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }) {
   const auth = await requireAuth(req, { rateLimit: { limit: 240, windowMs: 60_000 } });
@@ -21,32 +21,15 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
       { headers: rateLimitHeaders(auth.rateLimit ?? null) }
     );
   }
-
   const { id } = await ctx.params;
 
   try {
-    const data = await getCompetition(auth.supabase, { id });
-    const role = await requireOrganizerRole(auth.supabase, {
-      eventOrganizerId: data.event_organizer_id,
-      userId: auth.userId,
-      allowedRoles: ["owner", "admin", "staff"]
-    });
-    if (!role.ok) {
-      return fail(
-        403,
-        { code: "FORBIDDEN", message: "Not a member of this event organizer" },
-        { headers: rateLimitHeaders(auth.rateLimit ?? null) }
-      );
-    }
+    const data = await getTeamProfile(auth.supabase, { id });
     return ok(data, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   } catch (e: unknown) {
     const mapped = mapToHttpError(e);
     return fail(mapped.status, mapped.error, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   }
-}
-
-export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }) {
-  return PATCH(req, ctx);
 }
 
 export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }> }) {
@@ -58,9 +41,8 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
       { headers: rateLimitHeaders(auth.rateLimit ?? null) }
     );
   }
-
   const { id } = await ctx.params;
-  const body = await readJson<UpdateCompetitionInput>(req);
+  const body = await readJson<UpdateTeamProfileInput>(req);
   if (!body) {
     return fail(
       400,
@@ -69,22 +51,11 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
     );
   }
 
-  try {
-    const competition = await getCompetition(auth.supabase, { id });
-    const role = await requireOrganizerRole(auth.supabase, {
-      eventOrganizerId: competition.event_organizer_id,
-      userId: auth.userId,
-      allowedRoles: ["owner", "admin"]
-    });
-    if (!role.ok) {
-      return fail(
-        403,
-        { code: "FORBIDDEN", message: "Insufficient role to update competitions" },
-        { headers: rateLimitHeaders(auth.rateLimit ?? null) }
-      );
-    }
+  const patch: any = { ...body };
+  if (patch.slug !== undefined) patch.slug = slugify(String(patch.slug));
 
-    const data = await updateCompetition(auth.supabase, { id, patch: body });
+  try {
+    const data = await updateTeamProfile(auth.supabase, { id, patch });
     return ok(data, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   } catch (e: unknown) {
     const mapped = mapToHttpError(e);
@@ -101,28 +72,14 @@ export async function DELETE(req: Request, ctx: { params: Promise<{ id: string }
       { headers: rateLimitHeaders(auth.rateLimit ?? null) }
     );
   }
-
   const { id } = await ctx.params;
 
   try {
-    const competition = await getCompetition(auth.supabase, { id });
-    const role = await requireOrganizerRole(auth.supabase, {
-      eventOrganizerId: competition.event_organizer_id,
-      userId: auth.userId,
-      allowedRoles: ["owner", "admin"]
-    });
-    if (!role.ok) {
-      return fail(
-        403,
-        { code: "FORBIDDEN", message: "Insufficient role to delete competitions" },
-        { headers: rateLimitHeaders(auth.rateLimit ?? null) }
-      );
-    }
-
-    await deleteCompetition(auth.supabase, { id });
+    await deleteTeamProfile(auth.supabase, { id });
     return noContent({ headers: rateLimitHeaders(auth.rateLimit ?? null) });
   } catch (e: unknown) {
     const mapped = mapToHttpError(e);
     return fail(mapped.status, mapped.error, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   }
 }
+

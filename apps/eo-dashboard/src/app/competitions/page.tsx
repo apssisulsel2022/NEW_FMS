@@ -218,13 +218,18 @@ export default function CompetitionsPage() {
                 <td className="px-3 py-2 text-zinc-300">{r.season ?? ""}</td>
                 <td className="px-3 py-2 text-zinc-300">{r.published_at ? "Yes" : "No"}</td>
                 <td className="px-3 py-2 text-right">
-                  <button
-                    className="rounded border border-zinc-700 px-2 py-1 text-xs"
-                    onClick={() => publish(r.id)}
-                    disabled={loading || !session.accessToken || !!r.published_at}
-                  >
-                    Publish
-                  </button>
+                  <div className="flex justify-end gap-2">
+                    <Link className="rounded border border-zinc-700 px-2 py-1 text-xs" href={`/competitions/${r.id}/manage`}>
+                      Manage
+                    </Link>
+                    <button
+                      className="rounded border border-zinc-700 px-2 py-1 text-xs"
+                      onClick={() => publish(r.id)}
+                      disabled={loading || !session.accessToken || !!r.published_at}
+                    >
+                      Publish
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
