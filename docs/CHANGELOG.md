@@ -14,6 +14,8 @@ Format:
   - Enterprise database extension (120–150 tabel) termasuk partitioning untuk tabel high-volume, RBAC granular, data dictionary generator, benchmarking harness, dan playbooks operasional.
   - Database audit toolkit untuk metrik performa (storage, index usage, IO, lock contention, autovacuum, slow queries), laporan audit, indeks optimasi online (CONCURRENTLY), dan monitoring/alert playbook.
   - Indexing strategy package: audit queries untuk storage overhead/unused indexes, indeks tambahan online (v2), prosedur REINDEX CONCURRENTLY, dan dokumen strategi index berbasis query patterns.
+  - Data integrity package: pemetaan FK, deteksi orphan, deteksi missing FK indexes, checklist deployment, test suite SQL (no orphans + FK indexes), serta constraint tambahan berbasis domain (NOT VALID + validate).
+  - Competition core models: format, category, season, organizer profile extensions, hosting records, audit trails, tenant-safe constraints, serta spesifikasi API CRUD.
   - Service layer Supabase untuk competitions/teams/matches + automation worker + round-robin fixture generator.
   - 3 aplikasi Next.js: public web, EO dashboard, admin dashboard (shell).
   - API routes di EO dashboard untuk competitions/teams/matches + publish + match events.
