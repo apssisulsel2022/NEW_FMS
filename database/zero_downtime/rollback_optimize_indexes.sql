@@ -1,0 +1,12 @@
+drop index concurrently if exists competitions_event_organizer_id_created_at_idx;
+drop index concurrently if exists teams_competition_id_created_at_idx;
+drop index concurrently if exists matches_competition_id_scheduled_at_idx;
+drop index concurrently if exists matches_competition_id_match_status_scheduled_at_idx;
+drop index concurrently if exists standings_competition_rank_idx;
+drop index concurrently if exists players_event_organizer_name_idx;
+drop index concurrently if exists notifications_user_id_created_at_idx;
+drop index concurrently if exists automation_jobs_tenant_status_run_after_idx;
+drop index concurrently if exists media_processing_jobs_tenant_status_run_after_idx;
+drop index concurrently if exists ai_inference_jobs_tenant_status_run_after_idx;
+drop index concurrently if exists webhook_deliveries_tenant_status_created_at_idx;
+

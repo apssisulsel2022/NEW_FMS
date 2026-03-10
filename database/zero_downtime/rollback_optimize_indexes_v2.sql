@@ -1,0 +1,6 @@
+drop index concurrently if exists match_events_match_id_created_at_idx;
+drop index concurrently if exists generated_media_event_organizer_created_at_idx;
+drop index concurrently if exists media_assets_event_organizer_created_at_idx;
+drop index concurrently if exists player_statistics_tenant_player_created_at_idx;
+drop index concurrently if exists player_verifications_tenant_player_created_at_idx;
+
