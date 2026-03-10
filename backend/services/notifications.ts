@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export async function notifyUsers(
   supabase: SupabaseClient,
   params: {
-    eventOrganizerId: string;
+    eventOrganizerId?: string | null;
     userIds: string[];
     title: string;
     body?: string | null;
@@ -12,7 +12,7 @@ export async function notifyUsers(
   }
 ) {
   const rows = params.userIds.map((userId) => ({
-    event_organizer_id: params.eventOrganizerId,
+    event_organizer_id: params.eventOrganizerId ?? null,
     user_id: userId,
     channel: params.channel ?? "in_app",
     title: params.title,
@@ -24,4 +24,3 @@ export async function notifyUsers(
   if (error) throw error;
   return data ?? [];
 }
-

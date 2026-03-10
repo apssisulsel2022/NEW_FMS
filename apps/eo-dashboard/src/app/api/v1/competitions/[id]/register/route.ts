@@ -50,11 +50,16 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
 
     if (organizerUserIds.length > 0) {
       await notifyUsers(auth.supabase, {
-        eventOrganizerId: registration.event_organizer_id,
+        eventOrganizerId: null,
         userIds: organizerUserIds,
         title: "New team registration request",
         body: "A team submitted a registration request.",
-        payload: { type: "team_registration_requested", competitionId: registration.competition_id, participantId: registration.id }
+        payload: {
+          type: "team_registration_requested",
+          eventOrganizerId: registration.event_organizer_id,
+          competitionId: registration.competition_id,
+          participantId: registration.id
+        }
       });
     }
 
@@ -66,11 +71,16 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     const teamUserIds = (teamMembers ?? []).map((m) => m.user_id).filter(Boolean);
     if (teamUserIds.length > 0) {
       await notifyUsers(auth.supabase, {
-        eventOrganizerId: registration.event_organizer_id,
+        eventOrganizerId: null,
         userIds: teamUserIds,
         title: "Registration submitted",
         body: `${res.competitionName} registration is pending review.`,
-        payload: { type: "registration_submitted", competitionId: registration.competition_id, participantId: registration.id }
+        payload: {
+          type: "registration_submitted",
+          eventOrganizerId: registration.event_organizer_id,
+          competitionId: registration.competition_id,
+          participantId: registration.id
+        }
       });
     }
 
@@ -80,4 +90,3 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     return fail(mapped.status, mapped.error, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   }
 }
-

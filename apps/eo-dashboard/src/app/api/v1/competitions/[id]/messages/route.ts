@@ -50,11 +50,11 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     const userIds = (members ?? []).map((m) => m.user_id).filter(Boolean);
     if (userIds.length > 0) {
       await notifyUsers(auth.supabase, {
-        eventOrganizerId: competition.event_organizer_id,
+        eventOrganizerId: null,
         userIds,
         title: "Team message",
         body: message,
-        payload: { type: "team_message", competitionId: id, teamProfileId }
+        payload: { type: "team_message", eventOrganizerId: competition.event_organizer_id, competitionId: id, teamProfileId }
       });
     }
 
@@ -64,4 +64,3 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     return fail(mapped.status, mapped.error, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   }
 }
-

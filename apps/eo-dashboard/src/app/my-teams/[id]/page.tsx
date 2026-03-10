@@ -38,6 +38,7 @@ type TeamInvitation = {
 type Registration = {
   id: string;
   created_at: string;
+  team_id?: string | null;
   registration_status: string;
   payment_status: string;
   competitions: { id: string; name: string; slug: string; start_date: string | null; end_date: string | null } | null;
@@ -290,6 +291,7 @@ export default function TeamProfilePage({ params }: { params: Promise<{ id: stri
                 <th className="px-3 py-2 text-left">Competition</th>
                 <th className="px-3 py-2 text-left">Status</th>
                 <th className="px-3 py-2 text-left">Payment</th>
+                <th className="px-3 py-2 text-right">Roster</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-900">
@@ -298,11 +300,20 @@ export default function TeamProfilePage({ params }: { params: Promise<{ id: stri
                   <td className="px-3 py-2 text-zinc-100">{r.competitions?.name ?? r.competitions?.id ?? r.id}</td>
                   <td className="px-3 py-2 text-zinc-300">{r.registration_status}</td>
                   <td className="px-3 py-2 text-zinc-300">{r.payment_status}</td>
+                  <td className="px-3 py-2 text-right">
+                    {r.team_id ? (
+                      <Link className="rounded border border-zinc-700 px-2 py-1 text-xs" href={`/teams/${r.team_id}/roster`}>
+                        Open
+                      </Link>
+                    ) : (
+                      <span className="text-xs text-zinc-500">-</span>
+                    )}
+                  </td>
                 </tr>
               ))}
               {registrations.length === 0 ? (
                 <tr>
-                  <td className="px-3 py-4 text-zinc-400" colSpan={3}>
+                  <td className="px-3 py-4 text-zinc-400" colSpan={4}>
                     No registrations yet.
                   </td>
                 </tr>
@@ -351,4 +362,3 @@ export default function TeamProfilePage({ params }: { params: Promise<{ id: stri
     </main>
   );
 }
-

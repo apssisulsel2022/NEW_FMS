@@ -117,7 +117,7 @@ export async function listTeamRegistrations(
   const { data, error, count } = await supabase
     .from("competition_participants")
     .select(
-      "id,created_at,competition_id,event_organizer_id,registration_status,payment_status,meta,competitions:competition_id(id,name,slug,start_date,end_date,registration_closes_at,entry_fee_cents,currency,state,published_at)",
+      "id,created_at,competition_id,event_organizer_id,team_id,registration_status,payment_status,meta,competitions:competition_id(id,name,slug,start_date,end_date,registration_closes_at,entry_fee_cents,currency,state,published_at)",
       { count: "exact" }
     )
     .eq("team_profile_id", params.teamProfileId)
@@ -180,4 +180,3 @@ export async function reviewTeamRegistration(
 
   return { participant: updated, teamId };
 }
-

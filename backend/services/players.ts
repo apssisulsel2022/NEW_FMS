@@ -8,6 +8,14 @@ export type CreatePlayerInput = {
   nationality?: string | null;
   gender?: string | null;
   photoPath?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  emergencyContactName?: string | null;
+  emergencyContactPhone?: string | null;
+  primaryPosition?: string | null;
+  jerseyNumberPreference?: number | null;
+  jerseyNumbersPreference?: number[] | null;
   nikEncrypted?: string | null;
   nikHmac?: string | null;
   nikLast4?: string | null;
@@ -20,6 +28,14 @@ export type UpdatePlayerInput = {
   nationality?: string | null;
   gender?: string | null;
   photoPath?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  emergencyContactName?: string | null;
+  emergencyContactPhone?: string | null;
+  primaryPosition?: string | null;
+  jerseyNumberPreference?: number | null;
+  jerseyNumbersPreference?: number[] | null;
   status?: string;
   nikEncrypted?: string | null;
   nikHmac?: string | null;
@@ -28,7 +44,7 @@ export type UpdatePlayerInput = {
 };
 
 const playerSelect =
-  "id,created_at,updated_at,status,event_organizer_id,first_name,last_name,date_of_birth,nationality,gender,photo_path,nik_last4,nik_set_at";
+  "id,created_at,updated_at,status,event_organizer_id,player_code,first_name,last_name,date_of_birth,nationality,gender,photo_path,email,phone,address,emergency_contact_name,emergency_contact_phone,primary_position,jersey_number_preference,jersey_numbers_preference,nik_last4,nik_set_at";
 
 export async function listPlayers(
   supabase: SupabaseClient,
@@ -84,6 +100,14 @@ export async function createPlayer(supabase: SupabaseClient, input: CreatePlayer
       nationality: input.nationality ?? null,
       gender: input.gender ?? null,
       photo_path: input.photoPath ?? null,
+      email: input.email ?? null,
+      phone: input.phone ?? null,
+      address: input.address ?? null,
+      emergency_contact_name: input.emergencyContactName ?? null,
+      emergency_contact_phone: input.emergencyContactPhone ?? null,
+      primary_position: input.primaryPosition ?? null,
+      jersey_number_preference: input.jerseyNumberPreference ?? null,
+      jersey_numbers_preference: input.jerseyNumbersPreference ?? [],
       nik_encrypted: input.nikEncrypted ?? null,
       nik_hmac: input.nikHmac ?? null,
       nik_last4: input.nikLast4 ?? null,
@@ -105,6 +129,14 @@ export async function updatePlayer(supabase: SupabaseClient, params: { id: strin
   if (patch.nationality !== undefined) update.nationality = patch.nationality;
   if (patch.gender !== undefined) update.gender = patch.gender;
   if (patch.photoPath !== undefined) update.photo_path = patch.photoPath;
+  if (patch.email !== undefined) update.email = patch.email;
+  if (patch.phone !== undefined) update.phone = patch.phone;
+  if (patch.address !== undefined) update.address = patch.address;
+  if (patch.emergencyContactName !== undefined) update.emergency_contact_name = patch.emergencyContactName;
+  if (patch.emergencyContactPhone !== undefined) update.emergency_contact_phone = patch.emergencyContactPhone;
+  if (patch.primaryPosition !== undefined) update.primary_position = patch.primaryPosition;
+  if (patch.jerseyNumberPreference !== undefined) update.jersey_number_preference = patch.jerseyNumberPreference;
+  if (patch.jerseyNumbersPreference !== undefined) update.jersey_numbers_preference = patch.jerseyNumbersPreference;
   if (patch.status !== undefined) update.status = patch.status;
   if (patch.nikEncrypted !== undefined) update.nik_encrypted = patch.nikEncrypted;
   if (patch.nikHmac !== undefined) update.nik_hmac = patch.nikHmac;
