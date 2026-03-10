@@ -14,6 +14,7 @@ Format:
   - Service layer Supabase untuk competitions/teams/matches + automation worker + round-robin fixture generator.
   - 3 aplikasi Next.js: public web, EO dashboard, admin dashboard (shell).
   - API routes di EO dashboard untuk competitions/teams/matches + publish + match events.
+  - REST API v1 terstruktur (users, competitions, teams, players, matches, statistics, media) dengan versioning, pagination, filtering/sorting/search, rate limiting, dan error format konsisten.
   - Tenant selector (list Event Organizers milik user) untuk mendukung multi-tenant workflow di EO dashboard.
   - Public page `/competition/[slug]` untuk menampilkan standings dan fixtures dari competition yang sudah publish.
   - Dokumen arsitektur lengkap sistem (frontend, backend, database, realtime, AI).
@@ -28,3 +29,4 @@ Format:
   - Docs: [docs/SYSTEM_ARCHITECTURE.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/SYSTEM_ARCHITECTURE.md)
   - Docs: [docs/MODULES.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/MODULES.md)
   - Docs: [docs/PROJECT_STRUCTURE.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/PROJECT_STRUCTURE.md)
+  - Docs: [docs/API_V1.md](file:///d:/PROYEK%20WEB%20MASTER/APLICASI/NEW_FMS/docs/API_V1.md)

@@ -1,4 +1,4 @@
-import { createSupabaseClient } from "../../../../../../../backend/services/supabase";
+import { createSupabaseClient } from "@backend/services/supabase";
 
 import { getSupabaseEnv } from "@/app/api/v1/_lib/env";
 import { getAccessToken, getClientIp } from "@/app/api/v1/_lib/http";
@@ -25,13 +25,17 @@ export async function requireAuth(req: Request, options?: { rateLimit?: { limit:
         ok: false as const,
         status: 429,
         message: "Too Many Requests",
-        rateLimit: { remaining: res.remaining, resetAt: res.resetAt }
+        rateLimit: { limit: options.rateLimit.limit, remaining: res.remaining, resetAt: res.resetAt }
       };
     }
 
-    return { ok: true as const, supabase, userId, rateLimit: { remaining: res.remaining, resetAt: res.resetAt } };
+    return {
+      ok: true as const,
+      supabase,
+      userId,
+      rateLimit: { limit: options.rateLimit.limit, remaining: res.remaining, resetAt: res.resetAt }
+    };
   }
 
   return { ok: true as const, supabase, userId };
 }
-

@@ -15,10 +15,11 @@
     "incremental": true,
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@backend/*": ["../../backend/*"],
+      "@modules/*": ["../../modules/*"]
     }
   },
   "include": ["next-env.d.ts", "src/**/*", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
-

@@ -27,8 +27,12 @@ export function parsePagination(url: URL, defaults?: { limit?: number; offset?: 
   return { limit, offset } satisfies Pagination;
 }
 
-export function parseSort(url: URL, allowed: string[], defaults?: { sortBy?: string; sortOrder?: "asc" | "desc" }) {
-  const sortBy = url.searchParams.get("sortBy") ?? defaults?.sortBy ?? null;
+export function parseSort<T extends string>(
+  url: URL,
+  allowed: readonly T[],
+  defaults?: { sortBy?: T; sortOrder?: "asc" | "desc" }
+) {
+  const sortBy = (url.searchParams.get("sortBy") as T | null) ?? defaults?.sortBy ?? null;
   const sortOrderRaw = (url.searchParams.get("sortOrder") ?? defaults?.sortOrder ?? "desc").toLowerCase();
   const sortOrder = sortOrderRaw === "asc" ? "asc" : "desc";
 
@@ -41,4 +45,3 @@ export function parseSearch(url: URL) {
   const q = url.searchParams.get("q") ?? url.searchParams.get("search") ?? "";
   return q.trim() ? q.trim() : null;
 }
-
