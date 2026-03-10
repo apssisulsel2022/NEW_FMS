@@ -19,6 +19,7 @@ Format:
   - Competition creation system module: drafts + preview, templates, participant import, scheduling generator, notifications on publish, status history, analytics view, and RLS hardening for core tenant tables.
   - Team registration system module: team profiles + roles, invitation tokens, team competition registration requests, organizer approval workflow, CSV export, competition discovery filters, and participant notifications.
   - Player registration system module: roster management APIs/UI, player profile extensions, eligibility validation (age + max roster size), CSV import/export, roster status tracking, audit trails, and realtime roster updates.
+  - Player verification workflow module: encrypted document upload, verification queue + decisioning + appeals, RLS for organizer/team access, audit trails, notifications and outbox events for AI/email processing, and metrics view.
   - Service layer Supabase untuk competitions/teams/matches + automation worker + round-robin fixture generator.
   - 3 aplikasi Next.js: public web, EO dashboard, admin dashboard (shell).
   - API routes di EO dashboard untuk competitions/teams/matches + publish + match events.

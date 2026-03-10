@@ -167,9 +167,14 @@ export default function TeamProfilePage({ params }: { params: Promise<{ id: stri
           <h1 className="text-2xl font-semibold">{profile?.name ?? "Team"}</h1>
           <p className="mt-2 text-sm text-zinc-300">{profile?.description ?? ""}</p>
         </div>
-        <Link className="text-sm underline" href="/my-teams">
-          Back
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link className="rounded border border-zinc-700 px-3 py-2 text-sm" href={`/my-teams/${teamProfileId}/verifications`}>
+            Verifications
+          </Link>
+          <Link className="text-sm underline" href="/my-teams">
+            Back
+          </Link>
+        </div>
       </div>
 
       <div className="mt-6 grid gap-6 md:grid-cols-2">
