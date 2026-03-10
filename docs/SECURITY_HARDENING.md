@@ -42,3 +42,15 @@ Recommended usage:
 - Store encrypted payload in `bytea` columns (example: `player_biometrics.encrypted_payload`).
 - Keep non-sensitive metadata in `jsonb meta` columns to preserve queryability.
 
+## PII: Player NIK
+
+NIK is stored in application-level encrypted form in `public.players`:
+
+- `nik_encrypted`: AES-256-GCM encrypted payload (versioned string)
+- `nik_hmac`: keyed HMAC-SHA256 for uniqueness checks per tenant
+- `nik_last4`: last 4 digits for UI display
+
+Key management:
+
+- The key is provided via server environment variable `FMS_PII_ENCRYPTION_KEY`.
+- The full NIK value is never returned by API responses; only `nik_last4` is exposed.

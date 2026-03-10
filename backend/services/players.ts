@@ -8,6 +8,9 @@ export type CreatePlayerInput = {
   nationality?: string | null;
   gender?: string | null;
   photoPath?: string | null;
+  nikEncrypted?: string | null;
+  nikHmac?: string | null;
+  nikLast4?: string | null;
 };
 
 export type UpdatePlayerInput = {
@@ -18,7 +21,14 @@ export type UpdatePlayerInput = {
   gender?: string | null;
   photoPath?: string | null;
   status?: string;
+  nikEncrypted?: string | null;
+  nikHmac?: string | null;
+  nikLast4?: string | null;
+  nikSetAt?: string | null;
 };
+
+const playerSelect =
+  "id,created_at,updated_at,status,event_organizer_id,first_name,last_name,date_of_birth,nationality,gender,photo_path,nik_last4,nik_set_at";
 
 export async function listPlayers(
   supabase: SupabaseClient,
@@ -37,7 +47,7 @@ export async function listPlayers(
 
   let query = supabase
     .from("players")
-    .select("*", { count: "exact" })
+    .select(playerSelect, { count: "exact" })
     .eq("event_organizer_id", params.eventOrganizerId)
     .range(offset, offset + limit - 1);
 
@@ -54,7 +64,11 @@ export async function listPlayers(
 }
 
 export async function getPlayer(supabase: SupabaseClient, params: { id: string }) {
-  const { data, error } = await supabase.from("players").select("*").eq("id", params.id).single();
+  const { data, error } = await supabase
+    .from("players")
+    .select(playerSelect)
+    .eq("id", params.id)
+    .single();
   if (error) throw error;
   return data;
 }
@@ -69,9 +83,13 @@ export async function createPlayer(supabase: SupabaseClient, input: CreatePlayer
       date_of_birth: input.dateOfBirth ?? null,
       nationality: input.nationality ?? null,
       gender: input.gender ?? null,
-      photo_path: input.photoPath ?? null
+      photo_path: input.photoPath ?? null,
+      nik_encrypted: input.nikEncrypted ?? null,
+      nik_hmac: input.nikHmac ?? null,
+      nik_last4: input.nikLast4 ?? null,
+      nik_set_at: input.nikEncrypted ? new Date().toISOString() : null
     })
-    .select("*")
+    .select(playerSelect)
     .single();
 
   if (error) throw error;
@@ -88,8 +106,17 @@ export async function updatePlayer(supabase: SupabaseClient, params: { id: strin
   if (patch.gender !== undefined) update.gender = patch.gender;
   if (patch.photoPath !== undefined) update.photo_path = patch.photoPath;
   if (patch.status !== undefined) update.status = patch.status;
+  if (patch.nikEncrypted !== undefined) update.nik_encrypted = patch.nikEncrypted;
+  if (patch.nikHmac !== undefined) update.nik_hmac = patch.nikHmac;
+  if (patch.nikLast4 !== undefined) update.nik_last4 = patch.nikLast4;
+  if (patch.nikSetAt !== undefined) update.nik_set_at = patch.nikSetAt;
 
-  const { data, error } = await supabase.from("players").update(update).eq("id", params.id).select("*").single();
+  const { data, error } = await supabase
+    .from("players")
+    .update(update)
+    .eq("id", params.id)
+    .select(playerSelect)
+    .single();
   if (error) throw error;
   return data;
 }
@@ -98,4 +125,3 @@ export async function deletePlayer(supabase: SupabaseClient, params: { id: strin
   const { error } = await supabase.from("players").delete().eq("id", params.id);
   if (error) throw error;
 }
-

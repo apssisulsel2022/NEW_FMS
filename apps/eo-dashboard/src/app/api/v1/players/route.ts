@@ -6,6 +6,7 @@ import { created, fail, okMeta } from "@/app/api/v1/_lib/responses";
 import { requireAuth } from "@/app/api/v1/_lib/auth";
 
 import { createPlayer, listPlayers, type CreatePlayerInput } from "@backend/services/players";
+import { encryptNik, validateNik } from "@/app/api/v1/_lib/nik";
 
 export async function GET(req: Request) {
   const auth = await requireAuth(req, { rateLimit: { limit: 240, windowMs: 60_000 } });
@@ -80,6 +81,34 @@ export async function POST(req: Request) {
   }
 
   try {
+    const piiKey = process.env.FMS_PII_ENCRYPTION_KEY ?? "";
+    const nikInput = (body as any).nik as string | undefined;
+    let nikEncrypted: string | null = null;
+    let nikHmac: string | null = null;
+    let nikLast4: string | null = null;
+
+    if (nikInput !== undefined) {
+      if (!piiKey) {
+        return fail(
+          500,
+          { code: "SERVER_ERROR", message: "Server misconfiguration" },
+          { headers: rateLimitHeaders(auth.rateLimit ?? null) }
+        );
+      }
+      const validated = validateNik(nikInput);
+      if (!validated.ok) {
+        return fail(
+          400,
+          { code: "INVALID_REQUEST", message: validated.message },
+          { headers: rateLimitHeaders(auth.rateLimit ?? null) }
+        );
+      }
+      const enc = encryptNik(validated.value, piiKey);
+      nikEncrypted = enc.encrypted;
+      nikHmac = enc.hmac;
+      nikLast4 = enc.last4;
+    }
+
     const data = await createPlayer(auth.supabase, {
       eventOrganizerId: body.eventOrganizerId,
       firstName: body.firstName,
@@ -87,7 +116,10 @@ export async function POST(req: Request) {
       dateOfBirth: body.dateOfBirth ?? null,
       nationality: body.nationality ?? null,
       gender: body.gender ?? null,
-      photoPath: body.photoPath ?? null
+      photoPath: body.photoPath ?? null,
+      nikEncrypted,
+      nikHmac,
+      nikLast4
     });
     return created(data, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   } catch (e: unknown) {
