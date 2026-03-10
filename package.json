@@ -1,0 +1,21 @@
+{
+  "name": "new-fms",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:web": "npm --workspace apps/web run dev",
+    "dev:admin": "npm --workspace apps/admin-dashboard run dev",
+    "dev:eo": "npm --workspace apps/eo-dashboard run dev",
+    "build:web": "npm --workspace apps/web run build",
+    "build:admin": "npm --workspace apps/admin-dashboard run build",
+    "build:eo": "npm --workspace apps/eo-dashboard run build",
+    "lint:web": "npm --workspace apps/web run lint",
+    "lint:admin": "npm --workspace apps/admin-dashboard run lint",
+    "lint:eo": "npm --workspace apps/eo-dashboard run lint",
+    "typecheck:web": "npm --workspace apps/web run typecheck",
+    "typecheck:admin": "npm --workspace apps/admin-dashboard run typecheck",
+    "typecheck:eo": "npm --workspace apps/eo-dashboard run typecheck"
+  }
+}
