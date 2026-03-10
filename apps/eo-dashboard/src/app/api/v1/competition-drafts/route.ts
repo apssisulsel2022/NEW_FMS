@@ -1,12 +1,16 @@
 import { mapToHttpError } from "@/app/api/v1/_lib/errors";
 import { rateLimitHeaders } from "@/app/api/v1/_lib/headers";
 import { readJson } from "@/app/api/v1/_lib/http";
-import { parsePagination, parseSearch, parseSort } from "@/app/api/v1/_lib/query";
+import { parsePagination } from "@/app/api/v1/_lib/query";
 import { created, fail, okMeta } from "@/app/api/v1/_lib/responses";
 import { requireAuth } from "@/app/api/v1/_lib/auth";
 import { requireOrganizerRole } from "@/app/api/v1/_lib/rbac";
 
-import { createCompetition, listCompetitions, type CreateCompetitionInput } from "@backend/services/competitions";
+import {
+  createCompetitionDraft,
+  listCompetitionDrafts,
+  type CreateCompetitionDraftInput
+} from "@backend/services/competitionDrafts";
 
 export async function GET(req: Request) {
   const auth = await requireAuth(req, { rateLimit: { limit: 240, windowMs: 60_000 } });
@@ -28,23 +32,15 @@ export async function GET(req: Request) {
     );
   }
 
-  const { limit, offset } = parsePagination(url, { limit: 50, maxLimit: 100 });
-  const q = parseSearch(url);
-  const sort = parseSort(url, ["created_at", "name", "published_at"] as const, {
-    sortBy: "created_at",
-    sortOrder: "desc"
-  });
-  const status = url.searchParams.get("status");
+  const createdByUserId = url.searchParams.get("createdByUserId");
+  const { limit, offset } = parsePagination(url, { limit: 50, maxLimit: 200 });
 
   try {
-    const { data, count } = await listCompetitions(auth.supabase, {
+    const { data, count } = await listCompetitionDrafts(auth.supabase, {
       eventOrganizerId,
+      createdByUserId: createdByUserId ? createdByUserId : null,
       limit,
-      offset,
-      q,
-      status,
-      sortBy: sort?.sortBy ?? "created_at",
-      sortOrder: sort?.sortOrder ?? "desc"
+      offset
     });
     return okMeta(data, { limit, offset, count }, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   } catch (e: unknown) {
@@ -54,7 +50,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const auth = await requireAuth(req, { rateLimit: { limit: 60, windowMs: 60_000 } });
+  const auth = await requireAuth(req, { rateLimit: { limit: 120, windowMs: 60_000 } });
   if (!auth.ok) {
     return fail(
       auth.status,
@@ -63,7 +59,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const body = await readJson<Partial<CreateCompetitionInput>>(req);
+  const body = await readJson<Partial<CreateCompetitionDraftInput>>(req);
   if (!body) {
     return fail(
       400,
@@ -72,10 +68,10 @@ export async function POST(req: Request) {
     );
   }
 
-  if (!body.eventOrganizerId || !body.name || !body.slug) {
+  if (!body.eventOrganizerId) {
     return fail(
       400,
-      { code: "INVALID_REQUEST", message: "eventOrganizerId, name, slug are required" },
+      { code: "INVALID_REQUEST", message: "eventOrganizerId is required" },
       { headers: rateLimitHeaders(auth.rateLimit ?? null) }
     );
   }
@@ -83,38 +79,24 @@ export async function POST(req: Request) {
   const role = await requireOrganizerRole(auth.supabase, {
     eventOrganizerId: body.eventOrganizerId,
     userId: auth.userId,
-    allowedRoles: ["owner", "admin"]
+    allowedRoles: ["owner", "admin", "staff"]
   });
   if (!role.ok) {
     return fail(
       403,
-      { code: "FORBIDDEN", message: "Insufficient role to create competitions" },
+      { code: "FORBIDDEN", message: "Not a member of this event organizer" },
       { headers: rateLimitHeaders(auth.rateLimit ?? null) }
     );
   }
 
   try {
-    const data = await createCompetition(auth.supabase, {
+    const data = await createCompetitionDraft(auth.supabase, {
       eventOrganizerId: body.eventOrganizerId,
-      name: body.name,
-      slug: body.slug,
-      categoryId: body.categoryId ?? null,
-      season: body.season ?? null,
-      startDate: body.startDate ?? null,
-      endDate: body.endDate ?? null,
-      description: (body as any).description ?? null,
-      registrationOpensAt: (body as any).registrationOpensAt ?? null,
-      registrationClosesAt: (body as any).registrationClosesAt ?? null,
-      participantLimit: (body as any).participantLimit ?? null,
-      competitionFormatId: (body as any).competitionFormatId ?? null,
-      prizeStructure: (body as any).prizeStructure ?? {},
-      eligibilityCriteria: (body as any).eligibilityCriteria ?? {},
-      judgingCriteria: (body as any).judgingCriteria ?? {},
-      entryFeeCents: (body as any).entryFeeCents ?? null,
-      currency: (body as any).currency ?? null,
-      allowPublicRegistration: (body as any).allowPublicRegistration ?? false,
-      defaultLocale: (body as any).defaultLocale ?? "en",
-      state: (body as any).state ?? "draft"
+      createdByUserId: auth.userId,
+      templateId: body.templateId ?? null,
+      step: body.step ?? 1,
+      payload: body.payload ?? {},
+      previewEnabled: body.previewEnabled ?? false
     });
     return created(data, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   } catch (e: unknown) {
@@ -122,3 +104,4 @@ export async function POST(req: Request) {
     return fail(mapped.status, mapped.error, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   }
 }
+

@@ -4,10 +4,10 @@ import { fail, ok } from "@/app/api/v1/_lib/responses";
 import { requireAuth } from "@/app/api/v1/_lib/auth";
 import { requireOrganizerRole } from "@/app/api/v1/_lib/rbac";
 
-import { getCompetition, publishCompetition } from "@backend/services/competitions";
+import { getCompetition } from "@backend/services/competitions";
 
-export async function POST(req: Request, ctx: { params: Promise<{ id: string }> }) {
-  const auth = await requireAuth(req, { rateLimit: { limit: 60, windowMs: 60_000 } });
+export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }) {
+  const auth = await requireAuth(req, { rateLimit: { limit: 240, windowMs: 60_000 } });
   if (!auth.ok) {
     return fail(
       auth.status,
@@ -23,18 +23,23 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     const role = await requireOrganizerRole(auth.supabase, {
       eventOrganizerId: competition.event_organizer_id,
       userId: auth.userId,
-      allowedRoles: ["owner", "admin"]
+      allowedRoles: ["owner", "admin", "staff"]
     });
     if (!role.ok) {
       return fail(
         403,
-        { code: "FORBIDDEN", message: "Insufficient role to publish competitions" },
+        { code: "FORBIDDEN", message: "Not a member of this event organizer" },
         { headers: rateLimitHeaders(auth.rateLimit ?? null) }
       );
     }
 
-    const data = await publishCompetition(auth.supabase, { id });
-    return ok(data, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
+    const { data, error } = await auth.supabase
+      .from("competition_analytics_summary")
+      .select("*")
+      .eq("competition_id", id)
+      .maybeSingle();
+    if (error) throw error;
+    return ok(data ?? null, { headers: rateLimitHeaders(auth.rateLimit ?? null) });
   } catch (e: unknown) {
     const mapped = mapToHttpError(e);
     return fail(mapped.status, mapped.error, { headers: rateLimitHeaders(auth.rateLimit ?? null) });

@@ -16,6 +16,7 @@ Format:
   - Indexing strategy package: audit queries untuk storage overhead/unused indexes, indeks tambahan online (v2), prosedur REINDEX CONCURRENTLY, dan dokumen strategi index berbasis query patterns.
   - Data integrity package: pemetaan FK, deteksi orphan, deteksi missing FK indexes, checklist deployment, test suite SQL (no orphans + FK indexes), serta constraint tambahan berbasis domain (NOT VALID + validate).
   - Competition core models: format, category, season, organizer profile extensions, hosting records, audit trails, tenant-safe constraints, serta spesifikasi API CRUD.
+  - Competition creation system module: drafts + preview, templates, participant import, scheduling generator, notifications on publish, status history, analytics view, and RLS hardening for core tenant tables.
   - Service layer Supabase untuk competitions/teams/matches + automation worker + round-robin fixture generator.
   - 3 aplikasi Next.js: public web, EO dashboard, admin dashboard (shell).
   - API routes di EO dashboard untuk competitions/teams/matches + publish + match events.

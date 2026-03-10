@@ -99,10 +99,17 @@ export default function CompetitionsPage() {
 
   return (
     <main>
-      <h1 className="text-2xl font-semibold">Competitions</h1>
-      <p className="mt-2 text-sm text-zinc-300">
-        Select an Event Organizer (tenant), then create and publish competitions.
-      </p>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">Competitions</h1>
+          <p className="mt-2 text-sm text-zinc-300">
+            Select an Event Organizer (tenant), then create and publish competitions.
+          </p>
+        </div>
+        <Link className="rounded border border-zinc-700 px-3 py-2 text-sm" href="/competitions/new">
+          New (Wizard)
+        </Link>
+      </div>
 
       <div className="mt-6 grid gap-4 rounded border border-zinc-800 p-4 md:grid-cols-2">
         <label className="block">
